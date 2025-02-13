@@ -3,8 +3,7 @@ import { generateTaskBreakdown} from '../utils/ai.js';
 
 const router = express.Router();
 
-const app = express();
-const port = 3000;
+
 
 router.post('/breakdown', async (req, res) => {
     try {
@@ -20,3 +19,4 @@ router.post('/breakdown', async (req, res) => {
     }
   });
     
+  export default router;
