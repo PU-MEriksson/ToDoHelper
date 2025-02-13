@@ -17,6 +17,35 @@
       </nav>
     </header> -->
     <main>
+      <!-- <h1>Skriv in det du vill få gjort i fältet nedan</h1> -->
+      <div class="input-container">
+        <div class="to-do-header">
+          <h2>Att göra-lista</h2>
+          <img
+            src="./images/notebook.png"
+            alt="Bild på en anteckningsbok"
+            height="50px"
+          />
+        </div>
+        <div class="to-do-body">
+          <input
+            type="text"
+            id="input-field"
+            placeholder="Skriv in det du vill få gjort här t.ex. 'Städa köket'"
+          />
+          <img
+            src="./images/add-button.png"
+            alt="Ett plustecken"
+            id="add-button"
+            onclick="CreateToDoItem"
+          />
+        </div>
+        <div id="output">
+          <h5 id="alert"></h5>
+          <ul id="to-do-items" class="to-do-items"></ul>
+        </div>
+      </div>
+
       <!-- <h1>Bryt ner det du behöver få gjort i mindre delar</h1>
       <article>
         <h3>Hur sidan används</h3>
