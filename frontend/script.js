@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // frontend/script.js
 async function processTask() {
     const taskInput = document.getElementById('taskInput');
@@ -47,7 +46,6 @@ function displayResults(steps) {
 }
 
 export { processTask };
-=======
 document.addEventListener("DOMContentLoaded", loadStoredTasks);
 document.querySelector("#add-button").addEventListener("click", addTask);
 
@@ -148,4 +146,3 @@ function showAlert(message, type) {
     alertMessage.textContent = "";
   }, 3000);
 }
->>>>>>> feature/javascript-todo-logic
