@@ -42,7 +42,7 @@ function addTask() {
 }
 
 async function fetchAI(task) {
-  const response = await fetch("/api/breakdown", {
+  const response = await fetch("/api/tasks/breakdown", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ task }),
