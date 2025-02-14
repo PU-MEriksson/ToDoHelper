@@ -1,55 +1,99 @@
 // frontend/script.js
-async function processTask() {
-  const taskInput = document.getElementById("taskInput");
-  const resultsDiv = document.getElementById("results");
-  const task = taskInput.value.trim();
 
-  if (!task) {
-    alert("Please enter a task");
-    return;
-  }
-
-  try {
-    resultsDiv.innerHTML = "Processing...";
-    const response = await fetch("http://localhost:3000/api/tasks/breakdown", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ task }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to process task");
+function loadStoredTasks() {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const taskList = document.getElementById('taskList');
+    if (taskList) {
+        taskList.innerHTML = '';
+        tasks.forEach(task => {
+            const li = document.createElement('li');
+            li.textContent = task;
+            taskList.appendChild(li);
+        });
     }
+ }
+ 
+ async function processTask() {
+    const taskInput = document.getElementById("taskInput");
+    const resultsDiv = document.getElementById("results");
+    const task = taskInput.value.trim();
+ 
+    if (!task) {
+        alert("Please enter a task");
+        return;
+    }
+ 
+    try {
+        resultsDiv.innerHTML = "Processing...";
+        const response = await fetch("http://localhost:3000/api/tasks/breakdown", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ task }),
+        });
+ 
+        if (!response.ok) {
+            throw new Error("Failed to process task");
+        }
+ 
+        const data = await response.json();
+        displayResults(data.steps);
+    } catch (error) {
+        console.error("Error:", error);
+        resultsDiv.innerHTML = "Error processing task. Please try again.";
+    }
+ }
+ 
+ function displayResults(steps) {
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+ 
+    const list = document.createElement("ol");
+    steps.forEach((step) => {
+        const item = document.createElement("li");
+        item.textContent = step;
+        list.appendChild(item);
+    });
+ 
+    resultsDiv.appendChild(list);
+ }
+ 
+ function addTask() {
+    const taskInput = document.getElementById("taskInput");
+    const task = taskInput.value.trim();
+    
+    if (task) {
+        // Get existing tasks
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        // Add new task
+        tasks.push(task);
+        // Save back to localStorage
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        // Refresh the display
+        loadStoredTasks();
+        // Clear input
+        taskInput.value = '';
+    }
+ }
+ 
+ // Export the function
+ export { processTask };
+ 
+ // Initialize when the module loads
+ function init() {
+    loadStoredTasks();
+    document.querySelector("#add-button").addEventListener("click", addTask);
+ }
+ 
+ // Add event listener after export
+ if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+ } else {
+    init();
+ }
 
-    const data = await response.json();
-    displayResults(data.steps);
-  } catch (error) {
-    console.error("Error:", error);
-    resultsDiv.innerHTML = "Error processing task. Please try again.";
-  }
-}
-
-function displayResults(steps) {
-  const resultsDiv = document.getElementById("results");
-  resultsDiv.innerHTML = "";
-
-  const list = document.createElement("ol");
-  steps.forEach((step) => {
-    const item = document.createElement("li");
-    item.textContent = step;
-    list.appendChild(item);
-  });
-
-  resultsDiv.appendChild(list);
-}
-
-export { processTask };
-document.addEventListener("DOMContentLoaded", loadStoredTasks);
-document.querySelector("#add-button").addEventListener("click", addTask);
-
-function addTask() {
+/*function addTask() {
   const taskInput = document.querySelector("#input-field");
   const alertMessage = document.querySelector("#alert");
 
@@ -146,3 +190,4 @@ function showAlert(message, type) {
     alertMessage.textContent = "";
   }, 3000);
 }
+  /*/

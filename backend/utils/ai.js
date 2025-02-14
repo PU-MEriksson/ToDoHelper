@@ -36,7 +36,7 @@ export async function generateTaskBreakdown(task, detailLevel = 'standard') {
           content: `${prompt} ${task}`
         }
       ],
-      store: true,
+    
       stream: true,
     });
 
@@ -59,7 +59,6 @@ export async function generateTaskBreakdown(task, detailLevel = 'standard') {
   }
 }
 
-main();
 
 //test kod
 /*async function main() {

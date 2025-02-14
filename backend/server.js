@@ -14,9 +14,13 @@ const PORT = process.env.PORT || 3000;
 
 //middleware
 app.use(express.json());
-app.use(express.static(join(__dirname, '../../frontend')));
+app.use(express.static(join(__dirname, '../frontend')));
 
 app.use('/api/tasks', taskRoutes);
+
+app.get('/', (req, res) => {
+    res.sendFile(join(__dirname, '../frontend/index.html'));
+});
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
