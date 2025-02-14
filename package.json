@@ -4,6 +4,8 @@
   "main": "backend/server.js",
   "type": "module",
   "scripts": {
+    "dev": "nodemon backend/server.js",
+    "start": "node backend/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,6 +24,7 @@
     "nodemon": "^3.1.9"
   },
   "dependencies": {
+    "debug": "^4.4.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "openai": "^4.83.0"
