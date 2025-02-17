@@ -25,7 +25,7 @@ export async function generateTaskBreakdown(task, detailLevel = "standard") {
       messages: [
         {
           role: "system",
-          content: `You are a task breakdown assistant that provides ${detailLevel} level instructions. ${
+          content: `You are a task breakdown assistant that provides ${detailLevel} level instructions in Swedish. Respond with just numbered steps, no markdown, no descriptions, no introductions., ${
             detailLevel === "detailed"
               ? "Include helpful tips and considerations."
               : detailLevel === "basic"
@@ -49,9 +49,15 @@ export async function generateTaskBreakdown(task, detailLevel = "standard") {
     }
 
     const steps = fullResponse
-      .split("\n")
-      .map((step) => step.trim())
-      .filter((step) => step.length > 0);
+      .split('\n')
+      .map(step => step.trim())
+      .filter(step => step.length > 0)
+      .map(step => {
+        return step
+          .replace(/^\d+\.\s*/, '') // Remove leading numbers
+          .replace(/\*\*/g, '')     // Remove asterisks
+          .trim();
+      });
 
     return steps;
   } catch (error) {
