@@ -5,11 +5,11 @@ const router = express.Router();
 
 router.post('/breakdown', async (req, res) => {
     try {
-        const { task } = req.body;
+        const { task, detailLevel } = req.body;
         if (!task) {
             return res.status(400).json({ error: 'Task is required' });
         }
-        const steps = await generateTaskBreakdown(task);
+        const steps = await generateTaskBreakdown(task, detailLevel);
         res.json({ steps });
     } catch (error) {
         console.error('Error processing task:', error);

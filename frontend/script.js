@@ -12,6 +12,7 @@ if (document.readyState === "loading") {
 
 function addTask() {
   const taskInput = document.querySelector("#input-field");
+  const detailLevel = document.querySelector("#detailed").value;
   const alertMessage = document.querySelector("#alert");
 
   const task = taskInput.value.trim();
@@ -28,8 +29,14 @@ function addTask() {
   renderTasks();
   showAlert("Uppgift tillagd!", "success");
 
+  const detailLevelMap = {
+    'low': 'basic',
+    'medium': 'standard',
+    'high': 'detailed'
+  };
+
   // Fetch AI-generated steps and update task
-  fetchAI(task)
+  fetchAI(task,detailLevelMap[detailLevel])
     .then((steps) => {
       updateTaskInLocalStorage(task, steps);
       renderTasks();
@@ -41,12 +48,16 @@ function addTask() {
   taskInput.value = ""; // Clear input field
 }
 
-async function fetchAI(task) {
+async function fetchAI(task, detailLevel = 'standard') {
   const response = await fetch("/api/tasks/breakdown", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ task }),
+    body: JSON.stringify({ task, detailLevel }),
   });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch AI response');
+  }
 
   const data = await response.json();
   return data.steps || [];
