@@ -30,13 +30,13 @@ function addTask() {
   showAlert("Uppgift tillagd!", "success");
 
   const detailLevelMap = {
-    'low': 'basic',
-    'medium': 'standard',
-    'high': 'detailed'
+    low: "basic",
+    medium: "standard",
+    high: "detailed",
   };
 
   // Fetch AI-generated steps and update task
-  fetchAI(task,detailLevelMap[detailLevel])
+  fetchAI(task, detailLevelMap[detailLevel])
     .then((steps) => {
       updateTaskInLocalStorage(task, steps);
       renderTasks();
@@ -48,7 +48,7 @@ function addTask() {
   taskInput.value = ""; // Clear input field
 }
 
-async function fetchAI(task, detailLevel = 'standard') {
+async function fetchAI(task, detailLevel = "standard") {
   const response = await fetch("/api/tasks/breakdown", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -56,7 +56,7 @@ async function fetchAI(task, detailLevel = 'standard') {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to fetch AI response');
+    throw new Error("Failed to fetch AI response");
   }
 
   const data = await response.json();
@@ -87,8 +87,14 @@ function renderTasks() {
 
   tasks.forEach(({ task, steps }) => {
     const li = document.createElement("li");
-    li.textContent = task;
     li.classList.add("to-do-item");
+
+    // Create span for task text
+    const taskText = document.createElement("span");
+    taskText.textContent = task;
+    taskText.classList.add("task-text"); // Add class to task text
+    li.appendChild(taskText);
+
     todoList.appendChild(li);
 
     // Show AI-generated breakdown (if exists)
