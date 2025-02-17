@@ -1,6 +1,13 @@
 function init() {
   loadStoredTasks();
   document.querySelector("#add-button").addEventListener("click", addTask);
+
+  document.querySelector("#input-field").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevent form submission default behavior
+      addTask();
+}
+  });
 }
 
 // Add event listener after export
