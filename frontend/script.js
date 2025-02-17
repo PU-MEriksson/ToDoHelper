@@ -1,3 +1,11 @@
+function deleteTask(index) {
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  tasks.splice(index, 1);
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  renderTasks();
+  showAlert("Uppgift borttagen!", "success");
+}
+
 function init() {
   loadStoredTasks();
   document.querySelector("#add-button").addEventListener("click", addTask);
@@ -92,17 +100,27 @@ function renderTasks() {
 
   const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-  tasks.forEach(({ task, steps }) => {
+  tasks.forEach(({ task, steps }, index) => {
     const li = document.createElement("li");
     li.classList.add("to-do-item");
+
+    const taskContainer = document.createElement("div");
+    taskContainer.classList.add("task-container");
 
     // Create span for task text
     const taskText = document.createElement("span");
     taskText.textContent = task;
-    taskText.classList.add("task-text"); // Add class to task text
-    li.appendChild(taskText);
+    taskContainer.appendChild(taskText);
 
-    todoList.appendChild(li);
+    const deleteBtn = document.createElement("button");
+    deleteBtn.innerHTML = "×";
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.setAttribute("title", "Ta bort uppgift");
+    deleteBtn.addEventListener("click", () => deleteTask(index));
+
+    taskContainer.appendChild(deleteBtn);
+    li.appendChild(taskContainer);
+
 
     // Show AI-generated breakdown (if exists)
     if (steps.length > 0) {
@@ -118,6 +136,8 @@ function renderTasks() {
 
       li.appendChild(sublist);
     }
+
+    todoList.appendChild(li);
   });
 }
 
@@ -126,6 +146,8 @@ function showAlert(message, type) {
   const alertMessage = document.querySelector("#alert");
   alertMessage.textContent = message;
   //   alertMessage.style.color = type === "success" ? "green" : "red";
+
+
 
   setTimeout(() => {
     alertMessage.textContent = "";
