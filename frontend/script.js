@@ -10,12 +10,14 @@ function init() {
   loadStoredTasks();
   document.querySelector("#add-button").addEventListener("click", addTask);
 
-  document.querySelector("#input-field").addEventListener("keypress", function(event) {
-    if (event.key === "Enter") {
-      event.preventDefault(); // Prevent form submission default behavior
-      addTask();
-}
-  });
+  document
+    .querySelector("#input-field")
+    .addEventListener("keypress", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault(); // Prevent form submission default behavior
+        addTask();
+      }
+    });
 }
 
 // Add event listener after export
@@ -96,8 +98,7 @@ function loadStoredTasks() {
 
 function renderTasks() {
   const todoList = document.querySelector("#to-do-items");
-  todoList.innerHTML = ""; // Clear existing items
-
+  todoList.innerHTML = "";
   const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
   tasks.forEach(({ task, steps }, index) => {
@@ -107,11 +108,22 @@ function renderTasks() {
     const taskContainer = document.createElement("div");
     taskContainer.classList.add("task-container");
 
-    // Create span for task text
+    // Add checkbox for the task the user input
+    const taskCheckbox = document.createElement("input");
+    taskCheckbox.type = "checkbox";
+    taskCheckbox.classList.add("task-checkbox");
+    taskCheckbox.addEventListener("change", () => {
+      taskText.classList.toggle("completed", taskCheckbox.checked);
+    });
+
+    // Add span to main task text only
     const taskText = document.createElement("span");
     taskText.textContent = task;
+
+    taskContainer.appendChild(taskCheckbox);
     taskContainer.appendChild(taskText);
 
+    // Add delete button
     const deleteBtn = document.createElement("button");
     deleteBtn.innerHTML = "×";
     deleteBtn.classList.add("delete-btn");
@@ -121,16 +133,23 @@ function renderTasks() {
     taskContainer.appendChild(deleteBtn);
     li.appendChild(taskContainer);
 
-
-    // Show AI-generated breakdown (if exists)
+    // Show AI generated steps
     if (steps.length > 0) {
       const sublist = document.createElement("ul");
       sublist.classList.add("sub-tasks");
 
       steps.forEach((step) => {
         const subLi = document.createElement("li");
-        subLi.textContent = step;
         subLi.classList.add("sub-task-item");
+
+        // Create checkbox for each step
+        const stepCheckbox = document.createElement("input");
+        stepCheckbox.type = "checkbox";
+        stepCheckbox.classList.add("step-checkbox");
+
+        // Simply set the text content directly on the li element
+        subLi.appendChild(stepCheckbox);
+        subLi.appendChild(document.createTextNode(step));
         sublist.appendChild(subLi);
       });
 
@@ -141,13 +160,25 @@ function renderTasks() {
   });
 }
 
+// Function to get step completion status from localstorage
+function getStepCompletionStatus(taskIndex, stepIndex) {
+  const completedSteps =
+    JSON.parse(localStorage.getItem("completedSteps")) || {};
+  return completedSteps[`${taskIndex}-${stepIndex}`] || false;
+}
+
+// Function to save task to localstorage
+function toggleStepCompletion(taskIndex, stepIndex, isChecked) {
+  let completedSteps = JSON.parse(localStorage.getItem("completedSteps")) || {};
+  completedSteps[`${taskIndex}-${stepIndex}`] = isChecked;
+  localStorage.setItem("completedSteps", JSON.stringify(completedSteps));
+}
+
 // Show alert message
 function showAlert(message, type) {
   const alertMessage = document.querySelector("#alert");
   alertMessage.textContent = message;
   //   alertMessage.style.color = type === "success" ? "green" : "red";
-
-
 
   setTimeout(() => {
     alertMessage.textContent = "";
