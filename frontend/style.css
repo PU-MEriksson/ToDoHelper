@@ -70,21 +70,11 @@ main {
   height: 45px;
 }
 
-/* Kolla genom dessa: */
 ul li {
   list-style: none;
   font-size: 18px;
   cursor: pointer;
   padding: 10px;
-}
-
-li {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  background: rgb(228, 228, 228);
-  margin-bottom: 10px;
-  border-radius: 5px;
 }
 
 h5 {
@@ -100,15 +90,47 @@ h5 {
   margin-right: 5px;
 }
 
-.to-do-item {
-  position: relative;
+.task-container {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  background: rgb(228, 228, 228);
-  margin-bottom: 10px;
-  border-radius: 5px;
+  align-items: center;
   width: 100%;
+  padding: 0.5rem;
+  background: rgb(228, 228, 228);
+  border-radius: 5px 5px 0 0;
+}
+
+.controls-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.collapse-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: opacity 0.2s;
+  opacity: 0.7;
+  user-select: none;
+}
+
+.collapse-btn:hover {
+  opacity: 1;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: #666;
+}
+
+.to-do-item {
+  margin-bottom: 0.5rem;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 .to-do-item span {
@@ -120,7 +142,7 @@ h5 {
 .delete-btn {
   background: none;
   border: none;
-  color: var(--accent); /* Using your theme color */
+  color: var(--accent);
   font-size: 24px;
   cursor: pointer;
   padding: 10px 20px;
@@ -130,20 +152,30 @@ h5 {
 
 .delete-btn:hover {
   opacity: 1;
-  color: #ff4444; /* Red color on hover */
+  color: #ff4444;
 }
 
 .sub-tasks {
-  width: 100%;
-  padding-left: 2rem;
-  padding-bottom: 0.5rem;
+  padding: 0.5rem 2rem;
+  background: rgb(228, 228, 228);
+  margin: 0;
+  border-radius: 0 0 5px 5px;
 }
 
 .sub-task-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.25rem 0;
   font-size: 0.9em;
   color: var(--text);
   padding: 5px 0;
   font-weight: normal;
+}
+
+.sub-task-item:only-child {
+  color: #666;
+  font-style: italic;
 }
 
 input[type="checkbox"] {

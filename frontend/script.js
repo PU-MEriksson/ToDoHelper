@@ -1,3 +1,14 @@
+function saveCollapseState(taskId, isCollapsed) {
+  const collapseStates = JSON.parse(localStorage.getItem("collapseStates")) || {};
+  collapseStates[taskId] = isCollapsed;
+  localStorage.setItem("collapseStates", JSON.stringify(collapseStates));
+}
+
+function getCollapseState(taskId) {
+  const collapseStates = JSON.parse(localStorage.getItem("collapseStates")) || {};
+  return collapseStates[taskId] !== undefined ? collapseStates[taskId] : true;
+}
+
 function deleteTask(index) {
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   tasks.splice(index, 1);
@@ -14,13 +25,12 @@ function init() {
     .querySelector("#input-field")
     .addEventListener("keypress", function (event) {
       if (event.key === "Enter") {
-        event.preventDefault(); // Prevent form submission default behavior
+        event.preventDefault();
         addTask();
       }
     });
 }
 
-// Add event listener after export
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", init);
 } else {
@@ -62,7 +72,7 @@ function addTask() {
       showAlert("Kunde inte hämta steg från AI.", "error");
     });
 
-  taskInput.value = ""; // Clear input field
+  taskInput.value = "";
 }
 
 async function fetchAI(task, detailLevel = "standard") {
@@ -108,7 +118,7 @@ function renderTasks() {
     const taskContainer = document.createElement("div");
     taskContainer.classList.add("task-container");
 
-    // Add checkbox for the task the user input
+    // Add checkbox for the task
     const taskCheckbox = document.createElement("input");
     taskCheckbox.type = "checkbox";
     taskCheckbox.classList.add("task-checkbox");
@@ -116,69 +126,103 @@ function renderTasks() {
       taskText.classList.toggle("completed", taskCheckbox.checked);
     });
 
-    // Add span to main task text only
+    // Add span for task text
     const taskText = document.createElement("span");
     taskText.textContent = task;
 
-    taskContainer.appendChild(taskCheckbox);
-    taskContainer.appendChild(taskText);
+    // Create controls container
+    const controlsContainer = document.createElement("div");
+    controlsContainer.classList.add("controls-container");
+
+    // Get the saved collapse state for this task
+    const isExpanded = getCollapseState(task);
+
+    // Always add collapse button since every task has steps
+    const collapseBtn = document.createElement("button");
+    collapseBtn.innerHTML = isExpanded ? "▼" : "▶";
+    collapseBtn.classList.add("collapse-btn");
+    collapseBtn.setAttribute("title", "Expandera/Minimera");
+    
+    // Add click handler for collapse
+    collapseBtn.addEventListener("click", () => {
+      const sublist = li.querySelector(".sub-tasks");
+      const isCollapsed = sublist.style.display === "none";
+      sublist.style.display = isCollapsed ? "block" : "none";
+      collapseBtn.innerHTML = isCollapsed ? "▼" : "▶";
+      // Save the new collapse state
+      saveCollapseState(task, isCollapsed);
+    });
+    
+    controlsContainer.appendChild(collapseBtn);
 
     // Add delete button
     const deleteBtn = document.createElement("button");
     deleteBtn.innerHTML = "×";
     deleteBtn.classList.add("delete-btn");
     deleteBtn.setAttribute("title", "Ta bort uppgift");
-    deleteBtn.addEventListener("click", () => deleteTask(index));
+    deleteBtn.addEventListener("click", () => {
+      // Remove collapse state when deleting task
+      const collapseStates = JSON.parse(localStorage.getItem("collapseStates")) || {};
+      delete collapseStates[task];
+      localStorage.setItem("collapseStates", JSON.stringify(collapseStates));
+      deleteTask(index);
+    });
+    
+    controlsContainer.appendChild(deleteBtn);
 
-    taskContainer.appendChild(deleteBtn);
+    taskContainer.appendChild(taskCheckbox);
+    taskContainer.appendChild(taskText);
+    taskContainer.appendChild(controlsContainer);
     li.appendChild(taskContainer);
 
-    // Show AI generated steps
-    if (steps.length > 0) {
-      const sublist = document.createElement("ul");
-      sublist.classList.add("sub-tasks");
+    // Create sublist for steps
+    const sublist = document.createElement("ul");
+    sublist.classList.add("sub-tasks");
+    // Set initial display based on saved collapse state
+    sublist.style.display = isExpanded ? "block" : "none";
 
+    // Add steps if they exist (waiting for AI response)
+    if (steps && steps.length > 0) {
       steps.forEach((step) => {
         const subLi = document.createElement("li");
         subLi.classList.add("sub-task-item");
 
-        // Create checkbox for each step
         const stepCheckbox = document.createElement("input");
         stepCheckbox.type = "checkbox";
         stepCheckbox.classList.add("step-checkbox");
 
-        // Simply set the text content directly on the li element
         subLi.appendChild(stepCheckbox);
         subLi.appendChild(document.createTextNode(step));
         sublist.appendChild(subLi);
       });
-
-      li.appendChild(sublist);
+    } else {
+      // If no steps yet, add a loading indicator
+      const loadingLi = document.createElement("li");
+      loadingLi.classList.add("sub-task-item");
+      loadingLi.textContent = "Laddar steg...";
+      sublist.appendChild(loadingLi);
     }
 
+    li.appendChild(sublist);
     todoList.appendChild(li);
   });
 }
 
-// Function to get step completion status from localstorage
 function getStepCompletionStatus(taskIndex, stepIndex) {
   const completedSteps =
     JSON.parse(localStorage.getItem("completedSteps")) || {};
   return completedSteps[`${taskIndex}-${stepIndex}`] || false;
 }
 
-// Function to save task to localstorage
 function toggleStepCompletion(taskIndex, stepIndex, isChecked) {
   let completedSteps = JSON.parse(localStorage.getItem("completedSteps")) || {};
   completedSteps[`${taskIndex}-${stepIndex}`] = isChecked;
   localStorage.setItem("completedSteps", JSON.stringify(completedSteps));
 }
 
-// Show alert message
 function showAlert(message, type) {
   const alertMessage = document.querySelector("#alert");
   alertMessage.textContent = message;
-  //   alertMessage.style.color = type === "success" ? "green" : "red";
 
   setTimeout(() => {
     alertMessage.textContent = "";
