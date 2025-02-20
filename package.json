@@ -1,11 +1,11 @@
 {
   "name": "todohelper",
   "version": "1.0.0",
-  "main": "backend/server.js",
+  "main": "backend/index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon backend/server.js",
-    "start": "node backend/server.js",
+    "dev": "nodemon backend/index.js",
+    "start": "node backend/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
