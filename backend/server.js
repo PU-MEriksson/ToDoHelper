@@ -12,13 +12,15 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-//middleware
+// middleware
 app.use(express.json());
 app.use(express.static(join(__dirname, "../frontend")));
 
+// API routes
 app.use("/api/tasks", taskRoutes);
 
-app.get("/", (req, res) => {
+// Catch all routes to serve index.html
+app.get("*", (req, res) => {
   res.sendFile(join(__dirname, "../frontend/index.html"));
 });
 
@@ -27,6 +29,11 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Something went wrong!" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+export default app;
+
+// Only listen if not running on Vercel
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
