@@ -9,6 +9,31 @@ function getCollapseState(taskId) {
   return collapseStates[taskId] !== undefined ? collapseStates[taskId] : true;
 }
 
+function saveTaskCheckboxState(task, isChecked) {
+  const checkboxStates = JSON.parse(localStorage.getItem("taskCheckboxStates")) || {};
+  checkboxStates[task] = isChecked;
+  localStorage.setItem("taskCheckboxStates", JSON.stringify(checkboxStates));
+}
+
+function getTaskCheckboxState(task) {
+  const checkboxStates = JSON.parse(localStorage.getItem("taskCheckboxStates")) || {};
+  return checkboxStates[task] || false;
+}
+
+function saveStepCheckboxState(taskId, stepIndex, isChecked) {
+  const stepStates = JSON.parse(localStorage.getItem("stepCheckboxStates")) || {};
+  if (!stepStates[taskId]) {
+    stepStates[taskId] = {};
+  }
+  stepStates[taskId][stepIndex] = isChecked;
+  localStorage.setItem("stepCheckboxStates", JSON.stringify(stepStates));
+}
+
+function getStepCheckboxState(taskId, stepIndex) {
+  const stepStates = JSON.parse(localStorage.getItem("stepCheckboxStates")) || {};
+  return stepStates[taskId]?.[stepIndex] || false;
+}
+
 function deleteTask(index) {
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   tasks.splice(index, 1);
@@ -92,7 +117,7 @@ async function fetchAI(task, detailLevel = "standard") {
 
 function saveTaskToLocalStorage(taskObj) {
   const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  tasks.push(taskObj);
+  tasks.unshift(taskObj);
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
@@ -118,17 +143,27 @@ function renderTasks() {
     const taskContainer = document.createElement("div");
     taskContainer.classList.add("task-container");
 
-    // Add checkbox for the task
+    // Add checkbox for the task with saved state
     const taskCheckbox = document.createElement("input");
     taskCheckbox.type = "checkbox";
     taskCheckbox.classList.add("task-checkbox");
-    taskCheckbox.addEventListener("change", () => {
-      taskText.classList.toggle("completed", taskCheckbox.checked);
-    });
+    
+    // Get and set the saved checkbox state
+    const isChecked = getTaskCheckboxState(task);
+    taskCheckbox.checked = isChecked;
 
-    // Add span for task text
+    // Add span for task text with saved completed state
     const taskText = document.createElement("span");
     taskText.textContent = task;
+    if (isChecked) {
+      taskText.classList.add("completed");
+    }
+
+    // Update checkbox change listener to save state
+    taskCheckbox.addEventListener("change", () => {
+      taskText.classList.toggle("completed", taskCheckbox.checked);
+      saveTaskCheckboxState(task, taskCheckbox.checked);
+    });
 
     // Create controls container
     const controlsContainer = document.createElement("div");
@@ -149,7 +184,6 @@ function renderTasks() {
       const isCollapsed = sublist.style.display === "none";
       sublist.style.display = isCollapsed ? "block" : "none";
       collapseBtn.innerHTML = isCollapsed ? "▼" : "▶";
-      // Save the new collapse state
       saveCollapseState(task, isCollapsed);
     });
     
@@ -161,10 +195,16 @@ function renderTasks() {
     deleteBtn.classList.add("delete-btn");
     deleteBtn.setAttribute("title", "Ta bort uppgift");
     deleteBtn.addEventListener("click", () => {
-      // Remove collapse state when deleting task
+      // Remove all associated states when deleting task
       const collapseStates = JSON.parse(localStorage.getItem("collapseStates")) || {};
+      const checkboxStates = JSON.parse(localStorage.getItem("taskCheckboxStates")) || {};
+      const stepStates = JSON.parse(localStorage.getItem("stepCheckboxStates")) || {};
       delete collapseStates[task];
+      delete checkboxStates[task];
+      delete stepStates[task];
       localStorage.setItem("collapseStates", JSON.stringify(collapseStates));
+      localStorage.setItem("taskCheckboxStates", JSON.stringify(checkboxStates));
+      localStorage.setItem("stepCheckboxStates", JSON.stringify(stepStates));
       deleteTask(index);
     });
     
@@ -178,25 +218,32 @@ function renderTasks() {
     // Create sublist for steps
     const sublist = document.createElement("ul");
     sublist.classList.add("sub-tasks");
-    // Set initial display based on saved collapse state
     sublist.style.display = isExpanded ? "block" : "none";
 
-    // Add steps if they exist (waiting for AI response)
+    // Add steps if they exist
     if (steps && steps.length > 0) {
-      steps.forEach((step) => {
+      steps.forEach((step, stepIndex) => {
         const subLi = document.createElement("li");
         subLi.classList.add("sub-task-item");
 
         const stepCheckbox = document.createElement("input");
         stepCheckbox.type = "checkbox";
         stepCheckbox.classList.add("step-checkbox");
+        
+        // Get and set the saved step checkbox state
+        const isStepChecked = getStepCheckboxState(task, stepIndex);
+        stepCheckbox.checked = isStepChecked;
+
+        // Add event listener to save step checkbox state
+        stepCheckbox.addEventListener("change", () => {
+          saveStepCheckboxState(task, stepIndex, stepCheckbox.checked);
+        });
 
         subLi.appendChild(stepCheckbox);
         subLi.appendChild(document.createTextNode(step));
         sublist.appendChild(subLi);
       });
     } else {
-      // If no steps yet, add a loading indicator
       const loadingLi = document.createElement("li");
       loadingLi.classList.add("sub-task-item");
       loadingLi.textContent = "Laddar steg...";
@@ -206,18 +253,6 @@ function renderTasks() {
     li.appendChild(sublist);
     todoList.appendChild(li);
   });
-}
-
-function getStepCompletionStatus(taskIndex, stepIndex) {
-  const completedSteps =
-    JSON.parse(localStorage.getItem("completedSteps")) || {};
-  return completedSteps[`${taskIndex}-${stepIndex}`] || false;
-}
-
-function toggleStepCompletion(taskIndex, stepIndex, isChecked) {
-  let completedSteps = JSON.parse(localStorage.getItem("completedSteps")) || {};
-  completedSteps[`${taskIndex}-${stepIndex}`] = isChecked;
-  localStorage.setItem("completedSteps", JSON.stringify(completedSteps));
 }
 
 function showAlert(message, type) {
