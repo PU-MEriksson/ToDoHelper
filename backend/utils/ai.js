@@ -1,11 +1,4 @@
-import OpenAI from "openai";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import openai from "../config/openai.js";
 
 const detailLevelPrompts = {
   basic: "Break down this task into 3-4 simple, essential steps:",
@@ -15,30 +8,32 @@ const detailLevelPrompts = {
     "Break down this task into 8-10 detailed steps, including tips and considerations for each step:",
 };
 
+const systemInstructions = {
+  basic:
+    "You are a Swedish task breakdown assistant. Respond with simple and concise steps, no markdown, no introductions.",
+  standard:
+    "You are a Swedish task breakdown assistant. Respond with clear and straightforward steps, no markdown, no introductions.",
+  detailed:
+    "You are a Swedish task breakdown assistant. Respond with detailed steps including tips and considerations, no markdown, no introductions.",
+};
+
 export async function generateTaskBreakdown(task, detailLevel = "standard") {
+  if (!task) {
+    throw new Error("No task provided.");
+  }
+
   try {
     const prompt =
       detailLevelPrompts[detailLevel] || detailLevelPrompts.standard;
+    const systemMessage =
+      systemInstructions[detailLevel] || systemInstructions.standard;
 
     const stream = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        {
-          role: "system",
-          content: `You are a task breakdown assistant that provides ${detailLevel} level instructions in Swedish. Respond with just numbered steps, no markdown, no descriptions, no introductions., ${
-            detailLevel === "detailed"
-              ? "Include helpful tips and considerations."
-              : detailLevel === "basic"
-              ? "Keep it simple and concise."
-              : "Provide clear, straightforward steps."
-          }`,
-        },
-        {
-          role: "user",
-          content: `${prompt} ${task}`,
-        },
+        { role: "system", content: systemMessage },
+        { role: "user", content: `${prompt} ${task}` },
       ],
-
       stream: true,
     });
 
@@ -48,31 +43,16 @@ export async function generateTaskBreakdown(task, detailLevel = "standard") {
       fullResponse += content;
     }
 
-    const steps = fullResponse
-      .split('\n')
-      .map(step => step.trim())
-      .filter(step => step.length > 0)
-      .map(step => {
-        return step
-          .replace(/^\d+\.\s*/, '') // Remove leading numbers
-          .replace(/\*\*/g, '')     // Remove asterisks
-          .trim();
-      });
-
-    return steps;
+    return fullResponse
+      .split("\n")
+      .map((step) => step.trim())
+      .filter((step) => step.length > 0)
+      .map((step) => step.replace(/^\d+\.\s*/, "").trim()); // Tar bort numrering
   } catch (error) {
     console.error("OpenAI API error:", error);
-    throw new Error("Failed to generate task breakdown");
+    if (error.response) {
+      console.error("API response error:", error.response.data);
+    }
+    throw new Error("Failed to generate task breakdown. Please try again.");
   }
 }
-
-//test kod
-/*async function main() {
-    try {
-      const steps = await generateTaskBreakdown("Clean the kitchen");
-      console.log(steps);
-    } catch (error) {
-      console.error('Error:', error.message);
-    }
-  }
-/*/
