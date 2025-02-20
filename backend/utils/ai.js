@@ -12,7 +12,7 @@ const detailLevelPrompts = {
   standard:
     "Break down this task into 5-7 clear steps with brief explanations:",
   detailed:
-    "Break down this task into 8-10 detailed steps, including tips and considerations for each step:",
+    "Break down this task into 8-10 detailed steps:",
 };
 
 export async function generateTaskBreakdown(task, detailLevel = "standard") {
