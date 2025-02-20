@@ -70,6 +70,12 @@ main {
   height: 45px;
 }
 
+.detail-level {
+  display: flex;
+  gap: 10px;
+  margin: 20px;
+}
+
 ul li {
   list-style: none;
   font-size: 18px;
