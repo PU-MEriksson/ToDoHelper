@@ -10,7 +10,6 @@ const __dirname = dirname(__filename);
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // middleware
 app.use(express.json());
@@ -30,10 +29,3 @@ app.use((err, req, res, next) => {
 });
 
 export default app;
-
-// Only listen if not running on Vercel
-if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-}
