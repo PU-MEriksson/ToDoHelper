@@ -1,4 +1,6 @@
+// =================================
 // Handles localStorage interactions
+// =================================
 
 //Saves whether a task is collapsed (true/false) in localStorage.
 export function saveCollapseState(taskId, isCollapsed) {

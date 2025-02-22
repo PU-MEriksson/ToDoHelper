@@ -1,4 +1,7 @@
-// Manages task data and logic
+// ===========================
+//  Manages task data and logic
+// ============================
+
 import { renderTasks, showAlert } from "./ui.js";
 import { saveTaskToLocalStorage, updateTaskInLocalStorage } from "./storage.js";
 
