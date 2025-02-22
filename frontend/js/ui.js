@@ -98,7 +98,7 @@ function createCollapseButton(task) {
   collapseBtn.setAttribute("title", "Expandera/Minimera");
 
   collapseBtn.addEventListener("click", () => {
-    const sublist = li.querySelector(".sub-tasks");
+    const sublist = collapseBtn.closest("li").querySelector(".sub-tasks");
     const isCollapsed = sublist.style.display === "none";
     sublist.style.display = isCollapsed ? "block" : "none";
     collapseBtn.innerHTML = isCollapsed ? "▼" : "▶";
