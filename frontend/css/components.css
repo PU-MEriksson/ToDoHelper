@@ -1,3 +1,12 @@
+/* Add these styles to remove the border and outline from the button */
+button {
+  border: none;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
 /* Main container */
 main {
   display: flex;
