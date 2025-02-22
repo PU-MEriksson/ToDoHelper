@@ -1,32 +1,4 @@
-/* Import fonts */
-@import url("https://fonts.googleapis.com/css?family=Inter:700|Inter:400");
-@import "./base.css";
-@import "./components.css";
-@import "./responsive.css";
-
-/* Variables */
-:root {
-  --text: #0f0316;
-  --background: #fffefc;
-  --primary: #799a8d;
-  --secondary: #fffcf0;
-  --accent: #26736e;
-}
-
-/* Global styles */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: "Inter", sans-serif;
-  font-weight: 400;
-  background-color: var(--primary);
-  color: var(--text);
-}
-
+/* Main container */
 main {
   display: flex;
   justify-content: center;
@@ -34,6 +6,7 @@ main {
   flex-direction: column;
 }
 
+/* Input container */
 .input-container {
   background-color: var(--background);
   padding: 25px;
@@ -49,6 +22,7 @@ main {
   text-align: center;
 }
 
+/* To-do header */
 .to-do-header {
   display: flex;
   align-items: center;
@@ -56,6 +30,7 @@ main {
   gap: 20px;
 }
 
+/* To-do body */
 .to-do-body {
   display: flex;
   align-items: center;
@@ -83,12 +58,14 @@ main {
   height: 45px;
 }
 
+/* Detail level */
 .detail-level {
   display: flex;
   gap: 10px;
   margin: 20px;
 }
 
+/* List items */
 ul li {
   list-style: none;
   font-size: 18px;
@@ -102,13 +79,7 @@ h5 {
   color: var(--accent);
 }
 
-.todo-controls {
-  width: 25px;
-  height: 25px;
-  padding: 3px;
-  margin-right: 5px;
-}
-
+/* Task container */
 .task-container {
   display: flex;
   align-items: center;
@@ -118,11 +89,20 @@ h5 {
   border-radius: 5px 5px 0 0;
 }
 
+/* Controls container */
 .controls-container {
   display: flex;
   align-items: center;
 }
 
+.todo-controls {
+  width: 25px;
+  height: 25px;
+  padding: 3px;
+  margin-right: 5px;
+}
+
+/* Collapse button */
 .collapse-btn {
   background: none;
   border: none;
@@ -139,11 +119,13 @@ h5 {
   opacity: 1;
 }
 
+/* Completed tasks */
 .completed {
   text-decoration: line-through;
   color: #666;
 }
 
+/* To-do item */
 .to-do-item {
   margin-bottom: 0.5rem;
   border-radius: 5px;
@@ -156,6 +138,7 @@ h5 {
   flex: 1;
 }
 
+/* Delete button */
 .delete-btn {
   background: none;
   border: none;
@@ -172,6 +155,7 @@ h5 {
   color: #ff4444;
 }
 
+/* Sub-tasks */
 .sub-tasks {
   padding: 0.5rem 2rem;
   background: rgb(228, 228, 228);
@@ -193,52 +177,4 @@ h5 {
 .sub-task-item:only-child {
   color: #666;
   font-style: italic;
-}
-
-input[type="checkbox"] {
-  appearance: none;
-  min-width: 20px;
-  min-height: 20px;
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--accent);
-  border-radius: 5px;
-  cursor: pointer;
-  background-color: var(--background);
-  transition: background-color 0.2s, border-color 0.2s;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-input[type="checkbox"]:checked {
-  background-color: var(--accent);
-  border-color: var(--accent);
-}
-
-input[type="checkbox"]:checked::after {
-  content: "";
-  width: 6px;
-  height: 12px;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-  display: block;
-  margin-bottom: 2px;
-}
-
-@media (max-width: 768px) {
-  .input-container {
-    min-width: 90%;
-    margin-top: 20px;
-  }
-
-  #output {
-    width: 100%;
-  }
-
-  .task-container {
-    width: 100%;
-  }
 }

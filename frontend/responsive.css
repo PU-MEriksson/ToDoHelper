@@ -1,0 +1,15 @@
+/* Responsive styles */
+@media (max-width: 768px) {
+  .input-container {
+    min-width: 90%;
+    margin-top: 20px;
+  }
+
+  #output {
+    width: 100%;
+  }
+
+  .task-container {
+    width: 100%;
+  }
+}
