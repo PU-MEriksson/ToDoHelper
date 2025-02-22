@@ -1,162 +1,22 @@
-//Saves whether a task is collapsed (true/false) in localStorage.
-function saveCollapseState(taskId, isCollapsed) {
-  const collapseStates =
-    JSON.parse(localStorage.getItem("collapseStates")) || {};
-  collapseStates[taskId] = isCollapsed;
-  localStorage.setItem("collapseStates", JSON.stringify(collapseStates));
-}
+// =======================================
+// Handles DOM manipulation and rendering
+// =======================================
 
-//Retrieves the saved collapse state for a specific task, defaulting to true (expanded).
-function getCollapseState(taskId) {
-  const collapseStates =
-    JSON.parse(localStorage.getItem("collapseStates")) || {};
-  return collapseStates[taskId] !== undefined ? collapseStates[taskId] : true;
-}
+import {
+  saveCollapseState,
+  getCollapseState,
+  saveTaskCheckboxState,
+  getTaskCheckboxState,
+  saveTaskToLocalStorage,
+  updateTaskInLocalStorage,
+  getStepCheckboxState,
+  saveStepCheckboxState,
+} from "./storage.js";
 
-//Saves whether a task is checked (true/false) in localStorage.
-function saveTaskCheckboxState(task, isChecked) {
-  const checkboxStates =
-    JSON.parse(localStorage.getItem("taskCheckboxStates")) || {};
-  checkboxStates[task] = isChecked;
-  localStorage.setItem("taskCheckboxStates", JSON.stringify(checkboxStates));
-}
-
-//Retrieves the saved checkbox state for a specific task, defaulting to false (unchecked).
-function getTaskCheckboxState(task) {
-  const checkboxStates =
-    JSON.parse(localStorage.getItem("taskCheckboxStates")) || {};
-  return checkboxStates[task] || false;
-}
-
-//Saves whether a step is checked (true/false) in localStorage.
-function saveStepCheckboxState(taskId, stepIndex, isChecked) {
-  const stepStates =
-    JSON.parse(localStorage.getItem("stepCheckboxStates")) || {};
-  if (!stepStates[taskId]) {
-    stepStates[taskId] = {};
-  }
-  stepStates[taskId][stepIndex] = isChecked;
-  localStorage.setItem("stepCheckboxStates", JSON.stringify(stepStates));
-}
-
-//Retrieves the checkbox state for a specific step, defaulting to false (unchecked).
-function getStepCheckboxState(taskId, stepIndex) {
-  const stepStates =
-    JSON.parse(localStorage.getItem("stepCheckboxStates")) || {};
-  return stepStates[taskId]?.[stepIndex] || false;
-}
-
-//Deletes a task from localStorage and updates the UI.
-function deleteTask(index) {
-  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  tasks.splice(index, 1);
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-  renderTasks();
-  showAlert("Uppgift borttagen!", "success");
-}
-
-/////////////////////////////////////////////////////////////////////////////
-
-//Initializes the application by loading stored tasks and setting up event listeners.
-function init() {
-  loadStoredTasks();
-  document.querySelector("#add-button").addEventListener("click", addTask);
-
-  document
-    .querySelector("#input-field")
-    .addEventListener("keypress", function (event) {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        addTask();
-      }
-    });
-}
-
-//Check if the document is fully loaded before initializing the application.
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", init);
-} else {
-  init();
-}
-
-/////////////////////////////////////////////////////////////////////////////
-
-//Function to add a task to the list
-function addTask() {
-  const taskInput = document.querySelector("#input-field");
-  const detailLevel = document.querySelector("#detailed").value;
-  const alertMessage = document.querySelector("#alert");
-
-  const task = taskInput.value.trim();
-  alertMessage.textContent = "";
-
-  if (!task) {
-    showAlert("Vänligen skriv in en uppgift.", "error");
-    return;
-  }
-
-  // Save the task and update UI
-  const newTask = { task, steps: [] };
-  saveTaskToLocalStorage(newTask);
-  renderTasks();
-  showAlert("Uppgift tillagd!", "success");
-
-  const detailLevelMap = {
-    low: "basic",
-    medium: "standard",
-    high: "detailed",
-  };
-
-  // Fetch AI-generated steps and update task
-  fetchAI(task, detailLevelMap[detailLevel])
-    .then((steps) => {
-      updateTaskInLocalStorage(task, steps);
-      renderTasks();
-    })
-    .catch(() => {
-      showAlert("Kunde inte hämta steg från AI.", "error");
-    });
-
-  taskInput.value = "";
-}
-
-//Function to fetch AI-generated steps for a task
-async function fetchAI(task, detailLevel = "standard") {
-  const response = await fetch("/api/tasks/breakdown", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ task, detailLevel }),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch AI response");
-  }
-
-  const data = await response.json();
-  return data.steps || [];
-}
-
-//Function to save a task to localStorage
-function saveTaskToLocalStorage(taskObj) {
-  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  tasks.unshift(taskObj);
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-}
-
-//Function to update a task in localStorage
-function updateTaskInLocalStorage(task, steps) {
-  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  tasks = tasks.map((t) => (t.task === task ? { ...t, steps } : t));
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-}
-
-//Function to load stored tasks from localStorage
-function loadStoredTasks() {
-  renderTasks();
-}
+import { deleteTask } from "./tasks.js";
 
 //Function to render tasks from localStorage (the function retrieves tasks from local storage, creates HTML elements for them, and adds them to the page )
-function renderTasks() {
+export function renderTasks() {
   const todoList = document.querySelector("#to-do-items");
   todoList.innerHTML = "";
   const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -287,7 +147,7 @@ function renderTasks() {
 }
 
 //Function to show alert messages
-function showAlert(message, type) {
+export function showAlert(message, type) {
   const alertMessage = document.querySelector("#alert");
   alertMessage.textContent = message;
 
