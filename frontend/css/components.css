@@ -1,26 +1,13 @@
-@import url("https://fonts.googleapis.com/css?family=Inter:700|Inter:400");
-
-* {
-  box-sizing: border-box;
-  margin: 0;
+/* Add these styles to remove the border and outline from the button */
+button {
+  border: none;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
   padding: 0;
 }
 
-:root {
-  --text: #0f0316;
-  --background: #fffefc;
-  --primary: #799a8d;
-  --secondary: #fffcf0;
-  --accent: #26736e;
-}
-
-body {
-  font-family: "Inter", sans-serif;
-  font-weight: 400;
-  background-color: var(--primary);
-  color: var(--text);
-}
-
+/* Main container */
 main {
   display: flex;
   justify-content: center;
@@ -28,6 +15,7 @@ main {
   flex-direction: column;
 }
 
+/* Input container */
 .input-container {
   background-color: var(--background);
   padding: 25px;
@@ -36,7 +24,6 @@ main {
   border-radius: 10px;
 }
 
-
 #input-field::placeholder {
   white-space: normal;
   word-wrap: break-word;
@@ -44,6 +31,7 @@ main {
   text-align: center;
 }
 
+/* To-do header */
 .to-do-header {
   display: flex;
   align-items: center;
@@ -51,6 +39,7 @@ main {
   gap: 20px;
 }
 
+/* To-do body */
 .to-do-body {
   display: flex;
   align-items: center;
@@ -78,12 +67,14 @@ main {
   height: 45px;
 }
 
+/* Detail level */
 .detail-level {
   display: flex;
   gap: 10px;
   margin: 20px;
 }
 
+/* List items */
 ul li {
   list-style: none;
   font-size: 18px;
@@ -97,13 +88,7 @@ h5 {
   color: var(--accent);
 }
 
-.todo-controls {
-  width: 25px;
-  height: 25px;
-  padding: 3px;
-  margin-right: 5px;
-}
-
+/* Task container */
 .task-container {
   display: flex;
   align-items: center;
@@ -113,11 +98,20 @@ h5 {
   border-radius: 5px 5px 0 0;
 }
 
+/* Controls container */
 .controls-container {
   display: flex;
   align-items: center;
 }
 
+.todo-controls {
+  width: 25px;
+  height: 25px;
+  padding: 3px;
+  margin-right: 5px;
+}
+
+/* Collapse button */
 .collapse-btn {
   background: none;
   border: none;
@@ -134,11 +128,13 @@ h5 {
   opacity: 1;
 }
 
+/* Completed tasks */
 .completed {
   text-decoration: line-through;
   color: #666;
 }
 
+/* To-do item */
 .to-do-item {
   margin-bottom: 0.5rem;
   border-radius: 5px;
@@ -151,6 +147,7 @@ h5 {
   flex: 1;
 }
 
+/* Delete button */
 .delete-btn {
   background: none;
   border: none;
@@ -167,6 +164,7 @@ h5 {
   color: #ff4444;
 }
 
+/* Sub-tasks */
 .sub-tasks {
   padding: 0.5rem 2rem;
   background: rgb(228, 228, 228);
@@ -189,121 +187,3 @@ h5 {
   color: #666;
   font-style: italic;
 }
-
-input[type="checkbox"] {
-  appearance: none;
-  min-width: 20px;
-  min-height: 20px;
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--accent);
-  border-radius: 5px;
-  cursor: pointer;
-  background-color: var(--background);
-  transition: background-color 0.2s, border-color 0.2s;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-input[type="checkbox"]:checked {
-  background-color: var(--accent);
-  border-color: var(--accent);
-}
-
-input[type="checkbox"]:checked::after {
-  content: "";
-  width: 6px;
-  height: 12px;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-  display: block;
-  margin-bottom: 2px;
-}
-
-@media (max-width: 768px) {
-  .input-container {
-    min-width: 90%;
-    margin-top: 20px;
-  }
-
-  #output {
-    width: 100%;
-  }
-
-  .task-container {
-  width: 100%;
-  }
-
-
-}
-/*
-.navbar {
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: var(--background);
-  padding: 1rem 0;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  height: 50px;
-}
-
-.navbar ul {
-  display: flex;
-  justify-content: space-around;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-.navbar a {
-  text-decoration: none;
-  color: var(--text-color);
-}
-
-article {
-  margin: 5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--background);
-}
-
-article p {
-  margin: 1rem;
-  margin-top: 2rem;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-button {
-  padding: 10px 20px;
-  background-color: var(--accent);
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  color: white;
-  margin: 2rem;
-}
-
-button:hover {
-  background-color: var(--primary);
-  transform: scale(1.05);
-}
-
-button:active {
-  transform: scale(0.98);
-}
-

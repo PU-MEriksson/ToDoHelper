@@ -3,58 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./css/style.css" />
     <title>To Do Helper</title>
   </head>
   <body>
-    <header>
-      <!-- <nav class="navbar">
-        <ul>
-          <li><a href="#">Hem</a></li>
-          <li><a href="#">Om oss</a></li>
-          <li><a href="#">Kontakt</a></li>
-        </ul>
-      </nav> -->
-    </header>
     <main>
-      <!-- <h1>Skriv in det du vill få gjort i fältet nedan</h1> -->
-      <div class="input-container">
-        <div class="to-do-header">
+      <section class="input-container" aria-labelledby="to-do-header">
+        <header class="to-do-header" id="to-do-header">
           <h1>Att göra-lista</h1>
           <img
             src="./images/notebook.png"
             alt="Bild på en anteckningsbok"
             height="50px"
           />
-          <!-- Nivån på hur detaljerat svaret ska vara -->
-        </div>
+        </header>
         <div class="detail-level">
           <label for="detailed">Detaljnivå:</label>
-          <select id="detailed">
+          <select id="detailed" aria-label="Detaljnivå">
             <option value="low">Låg</option>
             <option value="medium">Medel</option>
             <option value="high">Hög</option>
           </select>
         </div>
         <div class="to-do-body">
+          <label for="input-field" class="visually-hidden">Ny uppgift</label>
           <input
             type="text"
             id="input-field"
             placeholder="Skriv in det du vill få gjort här t.ex. 'Städa köket'"
+            aria-label="Ny uppgift"
           />
-          <img
-            src="./images/add-button.png"
-            alt="Ett plustecken"
-            id="add-button"
-            onclick="CreateToDoItem"
-          />
+          <button id="add-button" aria-label="Lägg till uppgift">
+            <img src="./images/add-button.png" alt="Ett plustecken" />
+          </button>
         </div>
         <div id="output">
-          <h5 id="alert"></h5>
-          <ul id="to-do-items" class="to-do-items"></ul>
+          <h5 id="alert" role="alert"></h5>
+          <ul id="to-do-items" class="to-do-items" aria-live="polite"></ul>
         </div>
-      </div>
+      </section>
     </main>
-    <script type="module" src="./script.js"></script>
+    <script type="module" src="./js/app.js"></script>
   </body>
 </html>
