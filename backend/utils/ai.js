@@ -4,8 +4,7 @@ const detailLevelPrompts = {
   basic: "Break down this task into 3-4 simple, essential steps:",
   standard:
     "Break down this task into 5-7 clear steps with brief explanations:",
-  detailed:
-    "Break down this task into 8-10 detailed steps:",
+  detailed: "Break down this task into 8-10 detailed steps:",
 };
 
 const systemInstructions = {
@@ -14,7 +13,7 @@ const systemInstructions = {
   standard:
     "You are a Swedish task breakdown assistant. Respond with clear and straightforward steps, no markdown, no introductions.",
   detailed:
-    "You are a Swedish task breakdown assistant. Respond with detailed steps including tips and considerations, no markdown, no introductions.",
+    "You are a Swedish task breakdown assistant. Respond with detailed steps, no markdown, no introductions.",
 };
 
 export async function generateTaskBreakdown(task, detailLevel = "standard") {
