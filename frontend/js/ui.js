@@ -35,6 +35,12 @@ function createTaskElement(task, steps, index) {
 
   const taskCheckbox = createTaskCheckbox(task);
   const taskText = createTaskText(task, taskCheckbox.checked);
+
+  taskCheckbox.addEventListener(
+    "change",
+    taskCheckbox.createChangeHandler(taskText)
+  );
+
   const controlsContainer = createControlsContainer(task, index);
 
   taskContainer.appendChild(taskCheckbox);
@@ -57,10 +63,16 @@ function createTaskCheckbox(task) {
   const isChecked = getTaskCheckboxState(task);
   taskCheckbox.checked = isChecked;
 
-  taskCheckbox.addEventListener("change", () => {
-    taskText.classList.toggle("completed", taskCheckbox.checked);
-    saveTaskCheckboxState(task, taskCheckbox.checked);
-  });
+  // Create a closure to handle the taskText reference
+  const createChangeHandler = (taskTextElement) => {
+    return () => {
+      taskTextElement.classList.toggle("completed", taskCheckbox.checked);
+      saveTaskCheckboxState(task, taskCheckbox.checked);
+    };
+  };
+
+  // Store the handler function to be set later
+  taskCheckbox.createChangeHandler = createChangeHandler;
 
   return taskCheckbox;
 }
