@@ -51,7 +51,6 @@ main {
   margin: 10px;
   padding: 0;
   height: 45px;
-  
 }
 
 .to-do-body input {
@@ -76,6 +75,20 @@ main {
   display: flex;
   gap: 10px;
   margin: 20px;
+}
+
+.detail-level select {
+  background-color: var(--background);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  font-size: 0.75rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.detail-level option {
+  background-color: var(--background);
+  color: var(--text);
 }
 
 /* List items */
