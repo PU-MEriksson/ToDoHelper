@@ -2,6 +2,14 @@
 
 **ToDoHelper** is a web application designed to assist users with task planning by breaking down complex tasks into manageable steps using AI. The project follows an **MVC architecture** and consists of a frontend built with vanilla JavaScript, HTML, and CSS, and a backend powered by **Node.js** and **Express.**
 
+## 💡 Purpose & Background
+
+ToDoHelper was created with the goal of supporting users who experience cognitive or executive functioning challenges. The application uses AI to break down tasks into smaller, manageable steps — a feature that can be especially helpful for users with ADHD, autism, or stress-related difficulties.
+
+As someone with a professional background in social work, I’ve seen firsthand how digital tools can either empower or exclude. With this project, I wanted to combine my technical skills with my understanding of accessibility and neurodiversity to create a meaningful, supportive interface.
+
+This is an ongoing project and a personal passion — aimed at making technology more inclusive.
+
 ## ✨Features
 
 ✅ Breaks down tasks into manageable steps using OpenAI
@@ -68,7 +76,7 @@ ToDoHelper/
 
 - **Frontend**:
   - HTML5
-  - CSS3 (with responsive design)
+  - CSS (with responsive design)
   - Vanilla JavaScript (ES Modules)
 - **Backend**:
   - Node.js
